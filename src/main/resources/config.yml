@@ -1,0 +1,8 @@
+# Values that is more than 10.0 are interpreted as 10.0!!
+velocity: 2.0
+consume: true
+# Item ids on https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# NOT minecraft native id like "minecraft:record_blocks", but bukkit-enums-style "RECORD_3"
+booster: FEATHER
+# Y-derection accelaration is divied by this value
+gravity-coefficient: 4

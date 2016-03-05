@@ -33,22 +33,29 @@ import org.bukkit.util.Vector;
  */
 public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
 
-    private double velocity = 2;
+    private double acceleration = 2;
     private boolean consume = true;
     private Material booster = Material.FEATHER;
     private double gravityCoefficient = 4;
+    
+    private double maxVelocity = 10;
+    private double maxVelocityY = 10;
+    private double maxVelocityXZ = 10;
 
     @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
         this.saveDefaultConfig();
-        this.velocity = this.getConfig().getDouble("velocity", this.velocity);
+        this.acceleration = this.getConfig().getDouble("acceleration", this.acceleration);
         this.consume = this.getConfig().getBoolean("consume", this.consume);
         this.gravityCoefficient = this.getConfig().getDouble("gravity-coefficient", this.gravityCoefficient);
         try {
             this.booster = Material.getMaterial(this.getConfig().getString("booster").toUpperCase());
         } catch (IllegalArgumentException ex) {
         }
+        this.maxVelocity = this.getConfig().getDouble("max-velocity", this.maxVelocity);
+        this.maxVelocityY = this.getConfig().getDouble("y-max-velocity", this.maxVelocityY);
+        this.maxVelocityXZ = this.getConfig().getDouble("xz-max-velocity", this.maxVelocityXZ);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
@@ -63,11 +70,20 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
             return;
         }
         Vector v = p.getEyeLocation().getDirection()
-                .multiply(this.velocity)
+                .multiply(this.acceleration)
                 .divide(new Vector(1, this.gravityCoefficient, 1))
                 .add(p.getVelocity());
-        if (v.lengthSquared() > 100) {
-            v = v.normalize().multiply(10);
+        if (v.lengthSquared() > Math.pow(this.maxVelocity, 2.0D)) {
+            v = v.normalize().multiply(this.maxVelocity);
+        }
+        if (v.getX() > this.maxVelocityXZ) {
+            v.setX(this.maxVelocityXZ);
+        }
+        if (v.getY() > this.maxVelocityY) {
+            v.setY(this.maxVelocityY);
+        }
+        if (v.getZ() > this.maxVelocityXZ) {
+            v.setZ(this.maxVelocityXZ);
         }
         p.setVelocity(v);
         if (consume && p.getGameMode() != GameMode.CREATIVE) {

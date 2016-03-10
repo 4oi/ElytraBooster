@@ -9,11 +9,19 @@ consume: true
 booster: FEATHER
 
 # Y-derection accelaration is divied by this value
-gravity-coefficient: 4
+gravity-coefficient: 4.0
 
 # In common servers like spigot, max value is 10
-max-velocity: 10
+max-velocity: 10.0
+# The faster moving, boosters give less acceleration.
+accelaration-inversely-proportional-to-velocity: false
 
 # Max speed per direction
-y-max-velocity: 10
-xz-max-velocity: 10
+y-max-velocity: 10.0
+xz-max-velocity: 10.0
+
+# Cooldown
+cooldown: true
+cooldown-tick: 20.0
+# The faster moving, it's take more time to cool down.
+cooldown-proportional-to-velocity: false

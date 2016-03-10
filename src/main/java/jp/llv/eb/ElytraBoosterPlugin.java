@@ -39,8 +39,13 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
     private double gravityCoefficient = 4;
     
     private double maxVelocity = 10;
+    private boolean accelarationInverselyProportionalToVelocity = false;
     private double maxVelocityY = 10;
     private double maxVelocityXZ = 10;
+    
+    private boolean cooldown = true;
+    private double cooldownTick = 20D;
+    private boolean cooldownProportionalToVelocity = false;
 
     @Override
     public void onEnable() {
@@ -54,8 +59,13 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         } catch (IllegalArgumentException ex) {
         }
         this.maxVelocity = this.getConfig().getDouble("max-velocity", this.maxVelocity);
+        this.accelarationInverselyProportionalToVelocity = this.getConfig().getBoolean("accelaration-inversely-proportional-to-velocity", this.accelarationInverselyProportionalToVelocity);
         this.maxVelocityY = this.getConfig().getDouble("y-max-velocity", this.maxVelocityY);
         this.maxVelocityXZ = this.getConfig().getDouble("xz-max-velocity", this.maxVelocityXZ);
+        
+        this.cooldown = this.getConfig().getBoolean("cooldown", this.cooldown);
+        this.cooldownTick = this.getConfig().getDouble("cooldown-tick", this.cooldownTick);
+        this.cooldownProportionalToVelocity = this.getConfig().getBoolean("cooldown-proportional-to-velocity", this.cooldownProportionalToVelocity);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
@@ -66,7 +76,8 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
                 || p.getEquipment().getChestplate() == null
                 || p.getEquipment().getChestplate().getType() != Material.ELYTRA
                 || event.getItem() == null
-                || event.getItem().getType() != booster) {
+                || event.getItem().getType() != this.booster
+                || ItemCooldownUtil.inCooldown(p, this.booster)) {
             return;
         }
         Vector v = p.getEyeLocation().getDirection()
@@ -92,6 +103,9 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
             } else {
                 p.getInventory().remove(event.getItem());
             }
+        }
+        if (cooldown && p.getGameMode() != GameMode.CREATIVE) {
+            ItemCooldownUtil.setCooldown(p, booster, (int) (cooldownTick * (cooldownProportionalToVelocity ? v.length() : 1)));
         }
     }
 

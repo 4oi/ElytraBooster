@@ -16,6 +16,7 @@
  */
 package jp.llv.eb;
 
+import java.util.Optional;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,6 +47,9 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
     private boolean cooldown = true;
     private double cooldownTick = 20D;
     private boolean cooldownProportionalToVelocity = false;
+    
+    private BoostRequirement boostRequirement = BoostRequirement.ELYTRA;
+    private boolean flyOnBoost = true;
 
     @Override
     public void onEnable() {
@@ -66,6 +70,12 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         this.cooldown = this.getConfig().getBoolean("cooldown", this.cooldown);
         this.cooldownTick = this.getConfig().getDouble("cooldown-tick", this.cooldownTick);
         this.cooldownProportionalToVelocity = this.getConfig().getBoolean("cooldown-proportional-to-velocity", this.cooldownProportionalToVelocity);
+        
+        try {
+            this.boostRequirement = BoostRequirement.valueOf(this.getConfig().getString("required-equipment".toUpperCase().replace('-', '_')));
+        }catch(IllegalArgumentException ex) {
+        }
+        this.flyOnBoost = this.getConfig().getBoolean("fly-on-boost", this.flyOnBoost);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
@@ -73,12 +83,25 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         Player p = event.getPlayer();
         if (!p.hasPermission("elytrabooster.boost")
                 || event.getAction() != Action.RIGHT_CLICK_AIR
-                || p.getEquipment().getChestplate() == null
-                || p.getEquipment().getChestplate().getType() != Material.ELYTRA
                 || event.getItem() == null
                 || event.getItem().getType() != this.booster
                 || ItemCooldownUtil.inCooldown(p, this.booster)) {
             return;
+        }
+        switch (this.boostRequirement) {
+            case FLYING_WITH_ELYTRA:
+                if (!(flyOnBoost || p.isFlying())) {
+                    return;
+                }
+                //break;l not required
+            case ELYTRA:
+                if (p.getEquipment().getChestplate() == null || p.getEquipment().getChestplate().getType() != Material.ELYTRA) {
+                    return;
+                }
+                break;
+        }
+        if (!p.isFlying() && flyOnBoost) {
+            p.setFlying(true);
         }
         Vector v = p.getEyeLocation().getDirection()
                 .multiply(this.acceleration)
@@ -106,6 +129,17 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         }
         if (cooldown && p.getGameMode() != GameMode.CREATIVE) {
             ItemCooldownUtil.setCooldown(p, booster, (int) (cooldownTick * (cooldownProportionalToVelocity ? v.length() : 1)));
+        }
+    }
+    
+    private enum BoostRequirement {
+        NONE, ELYTRA, FLYING_WITH_ELYTRA;
+        static Optional<BoostRequirement> of(String name) {
+            try {
+                return Optional.of(valueOf(name.toUpperCase().replace('-', '_')));
+            }catch(IllegalArgumentException ex) {
+                return Optional.empty();
+            }
         }
     }
 

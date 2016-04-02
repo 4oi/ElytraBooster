@@ -25,3 +25,11 @@ cooldown: true
 cooldown-tick: 20.0
 # The faster moving, it's take more time to cool down.
 cooldown-proportional-to-velocity: false
+
+# none-> no equipments will be required to fly
+# elytra-> an elytra will be required
+# flying-with-elytra-> players flying with elytra
+required-equipment: elytra
+
+# If true, players will fly on boosting as if players equip elytra.
+fly-on-boost: true

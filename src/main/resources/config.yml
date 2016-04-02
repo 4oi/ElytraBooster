@@ -1,4 +1,4 @@
-# Values that is more than 10.0 are interpreted as 10.0!!
+# Acceleration size
 acceleration: 2.0
 
 # Not in creative mode, whether consume item or not.

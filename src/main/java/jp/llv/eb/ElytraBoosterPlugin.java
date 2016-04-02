@@ -102,11 +102,13 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
                 break;
         }
         if (!p.isGliding() && flyOnBoost) {
+            p.setFlying(false);
             p.setGliding(true);
         }
         Vector v = p.getEyeLocation().getDirection()
                 .multiply(this.acceleration)
                 .divide(new Vector(1, this.gravityCoefficient, 1))
+                .multiply(1/(this.accelarationInverselyProportionalToVelocity?p.getVelocity().length():1))
                 .add(p.getVelocity());
         if (v.lengthSquared() > Math.pow(this.maxVelocity, 2.0D)) {
             v = v.normalize().multiply(this.maxVelocity);

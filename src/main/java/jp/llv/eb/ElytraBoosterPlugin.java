@@ -72,7 +72,8 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         this.cooldownProportionalToVelocity = this.getConfig().getBoolean("cooldown-proportional-to-velocity", this.cooldownProportionalToVelocity);
         
         try {
-            this.boostRequirement = BoostRequirement.valueOf(this.getConfig().getString("required-equipment".toUpperCase().replace('-', '_')));
+            String e = this.getConfig().getString("required-equipment".toUpperCase().replace('-', '_'));
+            this.boostRequirement = e == null ? BoostRequirement.FLYING_WITH_ELYTRA : BoostRequirement.valueOf(e);
         }catch(IllegalArgumentException ex) {
         }
         this.flyOnBoost = this.getConfig().getBoolean("fly-on-boost", this.flyOnBoost);

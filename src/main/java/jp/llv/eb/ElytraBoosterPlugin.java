@@ -91,7 +91,7 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         }
         switch (this.boostRequirement) {
             case FLYING_WITH_ELYTRA:
-                if (!(flyOnBoost || p.isFlying())) {
+                if (!(flyOnBoost || p.isGliding())) {
                     return;
                 }
                 //break;l not required
@@ -101,8 +101,8 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
                 }
                 break;
         }
-        if (!p.isFlying() && flyOnBoost) {
-            p.setFlying(true);
+        if (!p.isGliding() && flyOnBoost) {
+            p.setGliding(true);
         }
         Vector v = p.getEyeLocation().getDirection()
                 .multiply(this.acceleration)

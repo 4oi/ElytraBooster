@@ -126,8 +126,10 @@ public class ElytraBoosterPlugin extends JavaPlugin implements Listener {
         if (consume && p.getGameMode() != GameMode.CREATIVE) {
             if (event.getItem().getAmount() != 1) {
                 event.getItem().setAmount(event.getItem().getAmount() - 1);
-            } else {
+            } else if (p.getInventory().getItemInMainHand().getType() == booster){
                 p.getInventory().remove(event.getItem());
+            } else {
+                p.getInventory().setItemInOffHand(null);
             }
         }
         if (cooldown && p.getGameMode() != GameMode.CREATIVE) {

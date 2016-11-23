@@ -1,4 +1,4 @@
 name: ElytraBooster
 main: jp.llv.eb.ElytraBoosterPlugin
 author: toyblocks
-version: 0.4
+version: ${project.version}

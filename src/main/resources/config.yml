@@ -4,25 +4,27 @@ acceleration: 2.0
 # Not in creative mode, whether consume item or not.
 consume: true
 
-# Item ids on https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Item ids in https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # NOT minecraft native id like "minecraft:record_blocks", but bukkit-enums-style "RECORD_3"
 booster: FEATHER
 
-# Y-derection accelaration is divied by this value
+# Y-direction accelaration is divied by this value
 gravity-coefficient: 4.0
 
 # In common servers like spigot, max value is 10
 max-velocity: 10.0
+
 # The faster moving, the less acceleration gain.
 accelaration-inversely-proportional-to-velocity: false
 
-# Max speed per direction
+# Max speed for each direction
 y-max-velocity: 10.0
 xz-max-velocity: 10.0
 
 # Cooldown
 cooldown: true
 cooldown-tick: 20.0
+
 # The faster moving, the more time it takes to cool down.
 cooldown-proportional-to-velocity: false
 
@@ -31,5 +33,5 @@ cooldown-proportional-to-velocity: false
 # flying-with-elytra-> players flying with elytra
 required-equipment: elytra
 
-# If true, players will fly on boosting as if players equip elytra.
+# If true, not only flying players but also standing players become flying mode on boosting
 fly-on-boost: true
